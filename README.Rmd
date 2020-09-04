@@ -1,0 +1,12 @@
+---
+output: github_document
+---
+
+#Objetivo
+Realizar uma analise de credito na base x. 
+
+````{r}
+
+plot(iris$Sepal.Length, iris$Petal.Width)
+
+````
