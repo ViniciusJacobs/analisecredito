@@ -67,7 +67,7 @@ df_credito_ajustado <- df_credito_ajustado %>%
 View(df_credito_ajustado)
 
 
-
+write_rds(df_credito_ajustado, path = "data/df_credito_ajustado.rds")
 
 
 

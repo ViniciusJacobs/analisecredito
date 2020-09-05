@@ -1,19 +1,33 @@
----
 
-output: github_document
+-----
 
----
+output: github\_document
+
+-----
+
 # Titulo
 
 # Objetivo
 
-```{r}
+``` r
 library(tidyverse)
-
-
 ```
 
-```{r}
+    ## Warning: replacing previous import 'vctrs::data_frame' by 'tibble::data_frame'
+    ## when loading 'dplyr'
+
+    ## -- Attaching packages ------------------------- tidyverse 1.3.0 --
+
+    ## v ggplot2 3.3.2     v purrr   0.3.4
+    ## v tibble  3.0.3     v dplyr   1.0.1
+    ## v tidyr   1.1.1     v stringr 1.4.0
+    ## v readr   1.3.1     v forcats 0.5.0
+
+    ## -- Conflicts ---------------------------- tidyverse_conflicts() --
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
+
+``` r
 df_credito <- read_rds("data/credito.rds")
 df_credito_ajustado <- df_credito%>%
   tidyr::replace_na(replace = list(moradia = "indefinido",
@@ -31,18 +45,11 @@ df_credito_ajustado <- df_credito_ajustado %>%
                                   idade<=55 ~ "Entre 46 e 55 anos",
                                   idade<85 ~"Acima dos 55 anos")) %>%
   relocate(faixa_etária, .after = idade)
-
-
-
 ```
 
+Objetivo
 
-Objetivo 
-
-
-
-```{r , }
-
+``` r
 ggplot()+
   aes(x = df_credito_ajustado$status)+
   geom_bar(width = 0.4, fill = "#4682B4")+
@@ -58,8 +65,16 @@ ggplot()+
   )
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or
+by pressing *Ctrl+Alt+I*.
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+When you save the notebook, an HTML file containing the code and output
+will be saved alongside it (click the *Preview* button or press
+*Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the
+editor. Consequently, unlike *Knit*, *Preview* does not run any R code
+chunks. Instead, the output of the chunk when it was last run in the
+editor is displayed.
