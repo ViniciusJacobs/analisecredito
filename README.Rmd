@@ -5,20 +5,20 @@ output: github_document
 # Objetivo
 
 
-Realizar uma analise de credito na base x. 
+Realizar uma analise de credito na base x
 
 
 # Plot
 ````{r}
 
- ggplot2::ggplot()+
+ggplot()+
   aes(x = df_credito_ajustado$status)+
-  ggplot2::geom_bar(width = 0.4, fill = "#4682B4")+
+  geom_bar(width = 0.4, fill = "#4682B4")+
   labs( title = "Distribuição por perfil: Bom x Ruim",
         x = "Perfil",
         y = "Quantidade")+
-  ggplot2::theme_gray()+
-  ggplot2::theme(
+  theme_gray()+
+  theme(
     legend.position = "right",
     plot.title = element_text(
       hjust = 0.5
