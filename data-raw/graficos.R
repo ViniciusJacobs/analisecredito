@@ -41,7 +41,7 @@ grafico_faixa_etaria <- ggplot()+
 grafico_rel_renda <- df_credito_ajustado %>%
   filter(!is.na(renda)) %>%
   ggplot() +
-  aes(x = status, y = renda) +
+  aes(x = status, y = log(renda)) +
   geom_boxplot(fill = "#4682B4")+
   labs( title = "Relação: Renda x Status",
         x = "Status",
@@ -59,7 +59,7 @@ grafico_rel_renda <- df_credito_ajustado %>%
 grafico_rel_ativos <- df_credito_ajustado %>%
   filter(!is.na(ativos)) %>%
   ggplot() +
-  aes(x = status, y = ativos) +
+  aes(x = status, y = log(ativos)) +
   geom_boxplot(fill = "#4682B4")+
   labs( title = "Relação: Ativos x Status",
         x = "Status",
@@ -75,7 +75,7 @@ grafico_rel_ativos <- df_credito_ajustado %>%
 grafico_rel_dividas <- df_credito_ajustado %>%
   filter(!is.na(dividas)) %>%
   ggplot() +
-  aes(x = status, y = dividas) +
+  aes(x = status, y = (dividas)) +
   geom_boxplot(fill = "#4682B4")+
   labs( title = "Relação: Ativos x Status",
         x = "Status",
@@ -87,6 +87,8 @@ grafico_rel_dividas <- df_credito_ajustado %>%
       hjust = 0.5
     )
   )
+
+
 #----------------------------------------------------------------------
 
 

@@ -3,8 +3,12 @@
 usethis::use_data(DATASET, overwrite = TRUE)
 
 ##Pacotes utilizados
+install.packages("caTools")
 library(tidyverse)
-library(purrr)
+library(broom)
+library(caTools)
+library(magrittr)
+
 devtools::load_all()
 
 
@@ -27,12 +31,14 @@ titulos_col<- df_credito %>%
   names
 #identificando os NA's
 for(i in 1:length(titulos_col)){
- x <- contagem_nas(df_credito, titulos_col[i])[[1]]
+  x <- contagem_nas(df_credito, titulos_col[i])[[1]]
   if(x>0){
-   print(titulos_col[i])
-   print(x)
- }
+    print(titulos_col[i])
+    print(x)
+  }
+
 }
+
 
 #DF AJUSTADO PARA O MODELO
 df_credito_ajustado <- df_credito%>%
@@ -64,17 +70,41 @@ df_credito_ajustado <- left_join(df_credito_ajustado, tabua_mortalidade)
 df_credito_ajustado <- df_credito_ajustado %>%
   relocate(idade, .before = qx)
 
+
+
+df_credito_ajustado <- df_credito_ajustado %>%
+  mutate(status_bin = case_when(status == "bom" ~ 1,
+                   status == "ruim" ~ 0)) %>%
+  relocate(status_bin, .after = status)
+
 View(df_credito_ajustado)
 
+#modelo de regressao_logistica
+set.seed(2103)
+split = sample.split(df_credito_ajustado$status, SplitRatio = 0.70)
 
-write_rds(df_credito_ajustado, path = "data/df_credito_ajustado.rds")
+# Criando bases de treino e teste
+train = subset(df_credito_ajustado, split == TRUE)
+test = subset(df_credito_ajustado, split == FALSE)
 
+mod_1 <- glm(status_bin ~ tempo_empresa, family = binomial(link="logit"), data = train)
 
+View(augment(mod_1))
 
+ggplot(train, aes(x=tempo_empresa, y=status_bin)) +
+  geom_point() +
+  stat_smooth(method="glm", method.args=list(family="binomial"), se=FALSE)
 
+summary(mod_1)
 
+ggplot(chd, aes(x=tempo, y=PRED)) +
+  geom_point()
 
+train_pred <- predict(mod_1, newdata = .fitted, type="response")
 
+train %>%
+  ggplot()+
+  aes(x = tempo_empresa, y )
 
 
 

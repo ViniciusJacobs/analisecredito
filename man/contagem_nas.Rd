@@ -5,12 +5,12 @@
 \title{Contagem de NA's
 A funcao retorna o numero de NAs dentro de um vetor do data.frame}
 \usage{
-contagem_nas(base_dados, variavel)
+contagem_nas(df, variavel)
 }
 \arguments{
-\item{base_dados}{data.frame em analise}
-
 \item{variavel}{nome da coluna entre (" ")}
+
+\item{base_dados}{data.frame em analise}
 }
 \value{
 Quantidade de NAs

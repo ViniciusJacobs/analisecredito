@@ -9,20 +9,34 @@
 #'
 #' @examples
 
-contagem_nas <- function(base_dados, variavel){
+contagem_nas <- function(df, variavel){
 
-x1 <- base_dados %>%
+       df %>%
        dplyr::filter(dplyr::across(
       .cols = c(variavel),
       .fns = ~is.na(.x)
     )) %>%
     count()
-
-y1<-base_dados %>%
-    count()
-
-print(x1)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
