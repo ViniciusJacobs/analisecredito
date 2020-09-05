@@ -58,7 +58,7 @@ Contagem dos valores NAs por váriavel do modelo
     ## [1] "dividas"
     ## [1] 18
 
-\#Avaliação para substituição dos NA’s
+Avaliação para substituição dos NA’s
 
 ``` r
 #As variáveis moradia, estado_civil e trabalho, apresentaram um número de NA's pouco expressivo, foi considerado como ERRO no cadastro. Para esse estudo não foi feita análise, mas sim a alteração dos campos NA's para indefinido.
@@ -67,80 +67,40 @@ df_credito_ajustado <- df_credito%>%
   tidyr::replace_na(replace = list(moradia = "indefinido",
                                    estado_civil = "indefinido",
                                    trabalho = "indefinido"))
-
-#As variáveis renda, ativos e dívidas, foram objeto de análise, gráfica e estatística, conforme abaixo:
-
-grafico_rel_renda <- df_credito_ajustado %>%
-  filter(!is.na(renda)) %>%
-  ggplot() +
-  aes(x = status, y = log(renda)) +
-  geom_boxplot(fill = "#4682B4")+
-  labs( title = "Relação: Renda x Status",
-        x = "Status",
-        y = "Renda")+
-  theme_gray()+
-  theme(
-    legend.position = "right",
-    plot.title = element_text(
-      hjust = 0.5
-    )
-  )
-
-
-grafico_rel_ativos <- df_credito_ajustado %>%
-  filter(!is.na(ativos)) %>%
-  ggplot() +
-  aes(x = status, y = log(ativos)) +
-  geom_boxplot(fill = "#4682B4")+
-  labs( title = "Relação: Ativos x Status",
-        x = "Status",
-        y = "Ativos")+
-  theme_gray()+
-  theme(
-    legend.position = "right",
-    plot.title = element_text(
-      hjust = 0.5
-    )
-  )
-
-grafico_rel_dividas <- df_credito_ajustado %>%
-  filter(!is.na(dividas)) %>%
-  ggplot() +
-  aes(x = status, y = log(dividas)) +
-  geom_boxplot(fill = "#4682B4")+
-  labs( title = "Relação: Ativos x Status",
-        x = "Status",
-        y = "Dividas")+
-  theme_gray()+
-  theme(
-    legend.position = "right",
-    plot.title = element_text(
-      hjust = 0.5
-    )
-  )
-
-patchwork::wrap_plots(grafico_rel_renda + grafico_rel_dividas + grafico_rel_ativos) 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+``` r
+#As variáveis renda, ativos e dívidas, foram objeto de análise, gráfica, conforme abaixo:
+
+grafico_rel_renda 
+```
+
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
+grafico_rel_dividas 
+```
+
+![](README_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+
+``` r
+grafico_rel_ativos 
+```
+
+![](README_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
 
 Retirada dos NA’s
 
 ``` r
-  df_credito_ajustado <- df_credito%>%
-  replace_na(replace = list(moradia = "indefinido",
-                                   estado_civil = "indefinido",
-                                   trabalho = "indefinido"))
-
+#A análise visual dos dados, nos mostra que para ambas variáveis o comportamento para o status, "Bom" ou "Ruim" apresenta a média muito próxima, concluindo assim que não apresentam forte valor explicativo para o modelo. 
+#Optei pela retirada dos NA's e inclusão da média para variável. 
+ 
   df_credito_ajustado <- df_credito_ajustado %>%
   replace_na(replace = list(renda = mean(df_credito_ajustado$renda, na.rm = TRUE),
-                                   ativos = mean(df_credito_ajustado$ativos, na.rm = TRUE),
-                                    dividas = mean(df_credito_ajustado$dividas, na.rm = TRUE)))
-df_credito_ajustado <- df_credito_ajustado %>%
-  mutate(faixa_etária = case_when(idade<=25 ~ "(Abaixo dos 25 anos)",
-                                  idade<=35 ~ "(Entre 26 e 35 anos",
-                                  idade<=45 ~ "Entre 36 e 45 anos",
-                                  idade<=55 ~ "Entre 46 e 55 anos",
-                                  idade<85 ~"Acima dos 55 anos")) %>%
-  relocate(faixa_etária, .after = idade)
+                            ativos = mean(df_credito_ajustado$ativos, na.rm = TRUE),
+                            dividas = mean(df_credito_ajustado$dividas, na.rm = TRUE)))
+```
+
+``` r
+#O data.frame agora está organizado e limpo. 
 ```

@@ -54,6 +54,8 @@ grafico_rel_renda <- df_credito_ajustado %>%
     )
   )
 
+
+
 #----------------------------------------------------------------------
 
 grafico_rel_ativos <- df_credito_ajustado %>%
