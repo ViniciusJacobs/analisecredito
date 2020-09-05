@@ -28,11 +28,7 @@ grafico_faixa_etaria <- ggplot()+
     legend.position = "right",
     plot.title = element_text(
       hjust = 0.5
-    ),
-    plot.title = element_text(
-      size =30
-    )
-  )
+    ))
 
 
 
