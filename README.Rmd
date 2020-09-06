@@ -25,6 +25,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(tidyr)
 library(patchwork)
+library(caret)
+library(randomForest)
 devtools::load_all()
 
 
@@ -358,3 +360,75 @@ prop.est.civi
 
 
 __Etapa 3: Elaborar modelo preditivo para o modelo__
+
+```{r include=FALSE}
+df_credito_ajustado <- df_credito_ajustado %>%
+  mutate(status_bin = case_when(status == "bom" ~ 1,
+                                status == "ruim" ~ 0)) %>%
+  relocate(status_bin, .after = status)
+
+df_credito_ajustado_previ <- df_credito_ajustado %>% 
+  relocate(status_bin, .before = status) %>% 
+  select(-status)
+```
+
+
+__Ajustes nas Variáveis__
+```{r}
+# Normalizando as variáveis
+
+numeric.vars <- c("tempo_empresa", "tempo_emprestimo", "idade",
+                  "despesas","renda","ativos","dividas", "valor_emprestimo","preco_do_bem")
+
+
+df_credito_ajustado_previ <- scale.features(df_credito_ajustado_previ, numeric.vars)
+
+#Variáveis tipo Fator
+categorical.vars <- c('status_bin', 'faixa_tempo_empresa', 'faixa_etaria',
+                      'estado_civil', 'trabalho', "moradia","registros")
+
+df_credito_ajustado_previ <- to.factors(df = df_credito_ajustado_previ, variables = categorical.vars)
+
+
+glimpse(df_credito_ajustado_previ)
+
+```
+__Divisão do data.frame em treino e teste__
+```{r}
+
+# Dividindo os dados em treino e teste - 60:40
+indexes <- sample(1:nrow(df_credito_ajustado_previ), size = 0.6 * nrow(df_credito_ajustado_previ))
+train.data <- df_credito_ajustado_previ[indexes,]
+test.data <- df_credito_ajustado_previ[-indexes,]
+
+
+
+
+```
+
+__Avaliando as variáveis que mais explicam o modelo__
+```{r}
+#rfe.results <- run.feature.selection(feature.vars = train.data[,-1],
+                                     #class.var = train.data[,1])
+
+# Visualizando os resultados
+##rfe.results
+##varImp((rfe.results))
+
+```
+
+__As variáveis que apresentaram maior relação explicativa a relação bom ou mau pagador (conforme esse modelo) são:__
+
+ __registros         30.047797__
+ 
+__trabalho            26.646050__
+
+__tempo_empresa       19.280090__
+
+__renda               19.067687__
+
+__valor-emprestimo    17.874087__
+
+__Na análise descritiva realizada no início do estudo foram avaliadas faixa etária, tempo de trabalho na empresa e estado civil. Nota-se, que somente o tempo de empresa dentre as variáveis, consta na lista das 5 mais explicativas.__
+
+

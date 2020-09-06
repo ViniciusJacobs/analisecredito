@@ -190,4 +190,26 @@ test.data <- df_credito_ajustado_previ[-indexes,]
 ``` r
 #rfe.results <- run.feature.selection(feature.vars = train.data[,-1],
                                      #class.var = train.data[,1])
+
+# Visualizando os resultados
+##rfe.results
+##varImp((rfe.results))
 ```
+
+**As variáveis que apresentaram maior relação explicativa a relação bom
+ou mau pagador (conforme esse modelo) são:**
+
+**registros 30.047797**
+
+**trabalho 26.646050**
+
+**tempo\_empresa 19.280090**
+
+**renda 19.067687**
+
+**valor-emprestimo 17.874087**
+
+**Na análise descritiva realizada no início do estudo foram avaliadas
+faixa etária, tempo de trabalho na empresa e estado civil. Nota-se, que
+somente o tempo de empresa dentre as variáveis, consta na lista das 5
+mais explicativas.**
