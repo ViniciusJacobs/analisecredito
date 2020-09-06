@@ -8,11 +8,3 @@ usethis::use_github()
 devtools::document()
 devtools::load_all()
 
-
-
-z=12
-if(z>10){
-  print("legal")
-}else{
-
-}

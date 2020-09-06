@@ -1,7 +1,7 @@
 
 # Análise de Perfil: Concessão de Crédito
 
-# Objetivo
+## Objetivo
 
   - Demonstrar algumas técnicas de AED;
   - Apresentar as caracteristicas demograficas e financeiras dos
@@ -10,7 +10,7 @@
     bons e ruins;
   - Elaborar um modelo de previsão para o problema de negócio.
 
-<!-- end list -->
+## Pacotes utilizados
 
 ``` r
 library(tidyverse)
@@ -19,7 +19,9 @@ library(patchwork)
 devtools::load_all()
 ```
 
-Leitura do data.frame e visualização das variáveis
+**Etapa 1: Análise Exploratória dos Dados**
+
+**Leitura do data.frame e visualização das variáveis**
 
 ``` r
 df_credito <- read_rds("data/credito.rds")
@@ -43,7 +45,7 @@ glimpse(df_credito)
     ## $ valor_emprestimo <int> 800, 1000, 2000, 900, 310, 650, 1600, 200, 1200, 1...
     ## $ preco_do_bem     <int> 846, 1658, 2985, 1325, 910, 1645, 1800, 1093, 1957...
 
-Contagem dos valores NAs por váriavel do modelo
+**Contagem dos valores NAs por váriavel do modelo**
 
     ## [1] "moradia"
     ## [1] 26
@@ -58,20 +60,24 @@ Contagem dos valores NAs por váriavel do modelo
     ## [1] "dividas"
     ## [1] 18
 
-Avaliação para substituição dos NA’s
+**Avaliação para substituição dos NA’s**
+
+**As variáveis moradia, estado\_civil e trabalho, apresentaram um número
+de NA’s pouco expressivo, foi considerado como ERRO no cadastro. Para
+esse estudo não foi feita análise, mas sim a alteração dos campos NA’s
+para indefinido.**
 
 ``` r
-#As variáveis moradia, estado_civil e trabalho, apresentaram um número de NA's pouco expressivo, foi considerado como ERRO no cadastro. Para esse estudo não foi feita análise, mas sim a alteração dos campos NA's para indefinido.
-
 df_credito_ajustado <- df_credito%>%
   tidyr::replace_na(replace = list(moradia = "indefinido",
                                    estado_civil = "indefinido",
                                    trabalho = "indefinido"))
 ```
 
-``` r
-#As variáveis renda, ativos e dívidas, foram objeto de análise, gráfica, conforme abaixo:
+**As variáveis renda, ativos e dívidas, foram objeto de análise,
+gráfica, conforme abaixo:**
 
+``` r
 grafico_rel_renda 
 ```
 
@@ -89,18 +95,57 @@ grafico_rel_ativos
 
 ![](README_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
 
-Retirada dos NA’s
+**Retirada dos NA’s**
+
+**A análise visual dos dados, nos mostra que para ambas variáveis o
+comportamento para o status, “Bom” ou “Ruim” apresenta a média muito
+próxima, concluindo assim que não apresentam forte valor explicativo
+para o modelo.**
+
+**Optei pela retirada dos NA’s e inclusão da média para variável.**
 
 ``` r
-#A análise visual dos dados, nos mostra que para ambas variáveis o comportamento para o status, "Bom" ou "Ruim" apresenta a média muito próxima, concluindo assim que não apresentam forte valor explicativo para o modelo. 
-#Optei pela retirada dos NA's e inclusão da média para variável. 
- 
   df_credito_ajustado <- df_credito_ajustado %>%
   replace_na(replace = list(renda = mean(df_credito_ajustado$renda, na.rm = TRUE),
                             ativos = mean(df_credito_ajustado$ativos, na.rm = TRUE),
                             dividas = mean(df_credito_ajustado$dividas, na.rm = TRUE)))
 ```
 
+**Etapa 2: Caracteristicas demograficas e financeiras dos clientes
+presentes na base de dados.**
+
+**Na etapa inicial, foi realizada analise gráfica e o mapeamento de
+algumas variáveis, conforme abaixo:**
+
 ``` r
-#O data.frame agora está organizado e limpo. 
+dist_por_perfil + grafico_estado_civil 
 ```
+
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+``` r
+dist_por_faixa_eta
+```
+
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+**Por fim uma análise dentro das variáveis analisadas, buscando a
+proporcão de bons pagadores de forma ampla**
+
+``` r
+prop.faixa.et
+```
+
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+``` r
+prop.tempo.emp
+```
+
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
+prop.est.civi 
+```
+
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
