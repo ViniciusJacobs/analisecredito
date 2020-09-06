@@ -9,6 +9,7 @@ devtools::load_all()
 df_credito <- read_rds("data/credito.rds")
 glimpse(df_credito)
 
+
 # #leitura de tabua de mortalidade
 # tabua_mortalidade <- read_delim("data/tabua_mortalidade.csv",
 #                                 ";",locale = locale(encoding = "ASCII"))

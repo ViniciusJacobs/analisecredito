@@ -27,6 +27,7 @@ library(tidyr)
 library(patchwork)
 library(caret)
 library(randomForest)
+library(ROCR)
 devtools::load_all()
 
 
@@ -369,7 +370,9 @@ df_credito_ajustado <- df_credito_ajustado %>%
 
 df_credito_ajustado_previ <- df_credito_ajustado %>% 
   relocate(status_bin, .before = status) %>% 
-  select(-status)
+  select(-status) %>% 
+  filter(estado_civil != "indefinido")
+
 ```
 
 
@@ -408,12 +411,12 @@ test.data <- df_credito_ajustado_previ[-indexes,]
 
 __Avaliando as variáveis que mais explicam o modelo__
 ```{r}
-#rfe.results <- run.feature.selection(feature.vars = train.data[,-1],
-                                     #class.var = train.data[,1])
+rfe.results <- run.feature.selection(feature.vars = train.data[,-1],
+                                 class.var = train.data[,1])
 
-# Visualizando os resultados
-##rfe.results
-##varImp((rfe.results))
+#Visualizando os resultados
+rfe.results
+varImp((rfe.results))
 
 ```
 
@@ -431,4 +434,93 @@ __valor-emprestimo    17.874087__
 
 __Na análise descritiva realizada no início do estudo foram avaliadas faixa etária, tempo de trabalho na empresa e estado civil. Nota-se, que somente o tempo de empresa dentre as variáveis, consta na lista das 5 mais explicativas.__
 
+```{r message=FALSE}
 
+## Separando as variáveis
+test.feature.vars <- test.data[,-1]
+test.class.var <- test.data[,1]
+
+# Construindo um modelo de regressão logística
+formula.init <- "status_bin ~ ."
+formula.init <- as.formula(formula.init)
+lr.model <- glm(formula = formula.init, data = train.data, family = "binomial")
+
+# Visualizando o modelo
+summary(lr.model)
+
+
+```
+
+__Testando o modelo nos dados de teste e avaliando a ConfusionMatrix__
+```{r}
+lr.predictions <- predict(lr.model, test.data, type="response")
+lr.predictions <- round(lr.predictions)
+
+confusionMatrix(table(data = lr.predictions, reference = test.class.var), positive = '1')
+```
+__O modelo apresentou uma Accuracy : 0.7963__
+
+__A matriz de confusão traz que quando o valor original era 0 nosso modelo acertou 242 e errou 98, e quando era 1 nosso modelo errou 265 e acertou 1177.__
+
+__Em um primeiro momento poderiamos dizer o que o modelo está com um bom nível de Accuracy, mas da pra melhorar?__
+
+
+```{r}
+#selecionar as melhores variáveis
+formula <- "status_bin ~ ."
+formula <- as.formula(formula)
+control <- trainControl(method = "repeatedcv", number = 10, repeats = 2)
+model <- train(formula, data = train.data, method = "glm", trControl = control)
+importance <- varImp(model, scale = FALSE)
+plot(importance)
+
+```
+__Contrstuindo um novo modelo com variáveis selecionadas__
+```{r}
+
+formula.new <- "status_bin ~ registros + valor_emprestimo + renda + trabalho + preco_do_bem + moradia + estado_civil + ativos + despesas + dividas + tempo_empresa"
+formula.new <- as.formula(formula.new)
+lr.model.new <- glm(formula = formula.new, data = train.data, family = "binomial")
+glimpse(df_credito_ajustado_previ)
+
+summary(lr.model.new)
+
+
+```
+
+__Testando o modelo__
+```{r}
+# Testando o modelo nos dados de teste
+lr.predictions.new <- predict(lr.model.new, test.data, type = "response") 
+lr.predictions.new <- round(lr.predictions.new)
+```
+
+
+__Avaliando a matrix de confusão e mudança na Accuracy__
+
+```{r}
+confusionMatrix(table(data = lr.predictions.new, reference = test.class.var), positive = '1')
+```
+
+__O modelo apresentou uma Accuracy : 0.7969, quase igual a anterior.__
+
+__A matriz de confusão traz que quando o valor original era 0 nosso modelo acertou 242 e errou 98, e quando era 1 nosso modelo errou 261 e acertou 1174.__
+
+__Seria necessário repensar a necessidade da escolha pelo segundo modelo__
+
+
+
+__Para concluir, foi apresentado a Curva de ROC no gráfico abaixo:__
+```{r}
+# Criando curvas ROC
+lr.model.best <- lr.model
+lr.prediction.values <- predict(lr.model.best, test.feature.vars, type = "response")
+predictions <- prediction(lr.prediction.values, test.class.var)
+par(mfrow = c(1,2))
+plot.roc.curve(predictions, title.text = "Curva ROC")
+plot.pr.curve(predictions, title.text = "Curva Precision/Recall")
+
+```
+ 
+ __O gráfico da esquerda nos mostra que a curva toda acima e a esquerda da reta. Sendo assim nosso modelo preditivo está estimando bem.__
+ 
