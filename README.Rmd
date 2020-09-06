@@ -27,6 +27,7 @@ library(tidyr)
 library(patchwork)
 devtools::load_all()
 
+
 ```
 
 __Etapa 1: Análise Exploratória dos Dados__

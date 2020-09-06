@@ -131,3 +131,5 @@ prop.est.civi
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+**Etapa 3: Elaborar modelo preditivo para o modelo**
