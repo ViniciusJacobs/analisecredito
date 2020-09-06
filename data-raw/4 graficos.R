@@ -4,7 +4,7 @@
 
 dist_por_perfil <-grafico_status <- ggplot()+
   aes(x = df_credito_ajustado$status)+
-  geom_bar(width = 0.4, fill = "#4682B4")+
+  geom_bar(width = 0.3, fill = "#0c4c8a")+
   labs( title = "Distribuição por perfil: Bom x Ruim",
         x = "Perfil",
         y = "Quantidade")+
@@ -16,9 +16,11 @@ dist_por_perfil <-grafico_status <- ggplot()+
     )
   )
 
+dist_por_perfil
+
 dist_por_faixa_eta <- grafico_faixa_etaria <- ggplot()+
   aes(x = df_credito_ajustado$faixa_etaria)+
-  geom_bar(width = 0.7, fill = "#4682B4")+
+  geom_bar(width = 0.5, fill = "#0c4c8a")+
   coord_flip()+
   labs( title = "Perfil Etário",
         x = "Faixa Etária",
@@ -30,15 +32,20 @@ dist_por_faixa_eta <- grafico_faixa_etaria <- ggplot()+
       hjust = 0.5
     ))
 
-grafico_estado_civil <- ggplot()+
-  aes(x = df_credito_ajustado$estado_civil)+
-  geom_bar(width = 0.4, fill = "#4682B4")+
+dist_por_faixa_eta
+
+
+grafico_estado_civil <- df_credito_ajustado %>%
+  filter(estado_civil != "indefinido") %>%
+  ggplot()+
+  aes(x = estado_civil)+
+  geom_bar(width = 0.5, fill = "#0c4c8a")+
   labs( title = "Estado Civil",
         x = "Situação",
         y = "Quantidade")+
   theme_gray()+
   theme(
-    axis.text.x = element_text(angle=45, hjust=1),
+    axis.text.x = element_text(angle=35, hjust=1, size = 11),
     legend.position = "right",
     plot.title = element_text(
       hjust = 0.5
@@ -49,6 +56,36 @@ grafico_estado_civil
 
 ###Grafico USAR
 
+
+ggplot(tab_faixa_tempoempre) +
+  aes(x = faixa_tempo_empresa, weight = prop.bons.ruins) +
+  geom_bar(width = 0.5,fill = "#0c4c8a") +
+  coord_flip()+
+  labs( title = "Bons Pagadores: (+) Tempo de Empresa ",
+        x = "Tempo de Empresa",
+        y = "Proporção: Bons/Ruins")+
+  theme_gray()+
+  theme(
+    legend.position = "right",
+    plot.title = element_text(
+      hjust = 0.5
+    ))
+
+
+
+ggplot(tab_faixa_etaria) +
+  aes(x = faixa_etaria, weight = prop.bons.ruins) +
+  geom_bar(width = 0.5, fill = "#0c4c8a") +
+  coord_flip()+
+  labs( title = "Bons Pagadores: (+) Faixa Etária ",
+        x = "Idade",
+        y = "Proporção: Bons/Ruins")+
+  theme_gray()+
+  theme(
+    legend.position = "right",
+    plot.title = element_text(
+      hjust = 0.5
+    ))
 
 ggplot(tab_faixa_tempoempre) +
   aes(x = faixa_tempo_empresa, weight = prop.bons.ruins) +
@@ -65,19 +102,6 @@ ggplot(tab_faixa_tempoempre) +
     ))
 
 
-ggplot(tab_faixa_etaria) +
-  aes(x = faixa_etaria, weight = prop.bons.ruins) +
-  geom_bar(fill = "#0c4c8a") +
-  coord_flip()+
-  labs( title = "Bons Pagadores: (+) Tempo de Empresa ",
-        x = "Tempo de Empresa",
-        y = "Proporção: Bons/Ruins")+
-  theme_gray()+
-  theme(
-    legend.position = "right",
-    plot.title = element_text(
-      hjust = 0.5
-    ))
 
 
 # df_credito_ajustado %>%
@@ -95,7 +119,7 @@ grafico_rel_renda <- df_credito_ajustado %>%
   filter(!is.na(renda)) %>%
   ggplot() +
   aes(x = status, y = log(renda)) +
-  geom_boxplot(fill = "#4682B4")+
+  geom_boxplot(fill = "#0c4c8a")+
   labs( title = "Relação: Renda x Status",
         x = "Status",
         y = "Renda")+
@@ -115,7 +139,7 @@ grafico_rel_ativos <- df_credito_ajustado %>%
   filter(!is.na(ativos)) %>%
   ggplot() +
   aes(x = status, y = log(ativos)) +
-  geom_boxplot(fill = "#4682B4")+
+  geom_boxplot(fill = "#0c4c8a")+
   labs( title = "Relação: Ativos x Status",
         x = "Status",
         y = "Ativos")+
@@ -131,7 +155,7 @@ grafico_rel_dividas <- df_credito_ajustado %>%
   filter(!is.na(dividas)) %>%
   ggplot() +
   aes(x = status, y = (dividas)) +
-  geom_boxplot(fill = "#4682B4")+
+  geom_boxplot(fill = "#0c4c8a")+
   labs( title = "Relação: Ativos x Status",
         x = "Status",
         y = "Dividas")+
