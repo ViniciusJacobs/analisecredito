@@ -78,22 +78,10 @@ df_credito_ajustado <- df_credito%>%
 gráfica, conforme abaixo:**
 
 ``` r
-grafico_rel_renda 
+grafico_rel_renda + grafico_rel_dividas + grafico_rel_ativos 
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
-
-``` r
-grafico_rel_dividas 
-```
-
-![](README_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
-
-``` r
-grafico_rel_ativos 
-```
-
-![](README_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
 
 **Retirada dos NA’s**
 
@@ -118,16 +106,10 @@ presentes na base de dados.**
 algumas variáveis, conforme abaixo:**
 
 ``` r
-dist_por_perfil + grafico_estado_civil 
+dist_por_perfil + grafico_estado_civil + dist_por_faixa_eta
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
-
-``` r
-dist_por_faixa_eta
-```
-
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 **Por fim uma análise dentro das variáveis analisadas, buscando a
 proporcão de bons pagadores de forma ampla**
@@ -136,16 +118,16 @@ proporcão de bons pagadores de forma ampla**
 prop.faixa.et
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 prop.tempo.emp
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 prop.est.civi 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->

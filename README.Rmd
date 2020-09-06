@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Análise de Perfil: Concessão de Crédito
 
-# Objetivo
+## Objetivo
   
 - Demonstrar algumas técnicas de AED; 
 - Apresentar as caracteristicas demograficas e financeiras dos clientes presentes na base de dados; 
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 - Elaborar um modelo de previsão para o problema de negócio.
 
 
-
+## Pacotes utilizados
 ```{r message=FALSE, warning=FALSE}
 
 library(tidyverse)
@@ -28,13 +28,16 @@ devtools::load_all()
 
 ```
 
-Leitura do data.frame e visualização das variáveis
+__Etapa 1: Análise Exploratória dos Dados__
+
+__Leitura do data.frame e visualização das variáveis__
+
 ```{r}
 df_credito <- read_rds("data/credito.rds")
 glimpse(df_credito)
 ```
 
-Contagem dos valores NAs por váriavel do modelo
+__Contagem dos valores NAs por váriavel do modelo__
 ```{r, echo=FALSE}
 
 titulos_col <- df_credito %>%
@@ -52,9 +55,11 @@ for(i in 1:length(titulos_col)){
 
 ```
 
-Avaliação para substituição dos NA's
+__Avaliação para substituição dos NA's__
+
+__As variáveis moradia, estado_civil e trabalho, apresentaram um número de NA's pouco expressivo, foi considerado como ERRO no cadastro. Para esse estudo não foi feita análise, mas sim a alteração dos campos NA's para indefinido.__
 ```{r warning=FALSE}
-#As variáveis moradia, estado_civil e trabalho, apresentaram um número de NA's pouco expressivo, foi considerado como ERRO no cadastro. Para esse estudo não foi feita análise, mas sim a alteração dos campos NA's para indefinido.
+
 
 df_credito_ajustado <- df_credito%>%
   tidyr::replace_na(replace = list(moradia = "indefinido",
@@ -70,8 +75,8 @@ grafico_rel_renda <- df_credito_ajustado %>%
   filter(!is.na(renda)) %>%
   ggplot() +
   aes(x = status, y = log(renda)) +
-  geom_boxplot(fill = "#4682B4")+
-  labs( title = "Relação: Renda x Status",
+  geom_boxplot(fill = "#0c4c8a")+
+  labs( title = "Renda x Status",
         x = "Status",
         y = "Renda")+
   theme_gray()+
@@ -87,8 +92,8 @@ grafico_rel_ativos <- df_credito_ajustado %>%
   filter(!is.na(ativos)) %>%
   ggplot() +
   aes(x = status, y = log(ativos)) +
-  geom_boxplot(fill = "#4682B4")+
-  labs( title = "Relação: Ativos x Status",
+  geom_boxplot(fill = "#0c4c8a")+
+  labs( title = "Ativos x Status",
         x = "Status",
         y = "Ativos")+
   theme_gray()+
@@ -103,8 +108,8 @@ grafico_rel_dividas <- df_credito_ajustado %>%
   filter(!is.na(dividas)) %>%
   ggplot() +
   aes(x = status, y = log(dividas)) +
-  geom_boxplot(fill = "#4682B4")+
-  labs( title = "Relação: Ativos x Status",
+  geom_boxplot(fill = "#0c4c8a")+
+  labs( title = "Dividas x Status",
         x = "Status",
         y = "Dividas")+
   theme_gray()+
@@ -117,22 +122,22 @@ grafico_rel_dividas <- df_credito_ajustado %>%
 ```
 
 
-
+__As variáveis renda, ativos e dívidas, foram objeto de análise, gráfica, conforme abaixo:__
 
 ```` {r warning=FALSE}
-#As variáveis renda, ativos e dívidas, foram objeto de análise, gráfica, conforme abaixo:
 
-grafico_rel_renda 
-grafico_rel_dividas 
-grafico_rel_ativos 
+grafico_rel_renda + grafico_rel_dividas + grafico_rel_ativos 
 
 ```
 
 
-Retirada dos NA's
+__Retirada dos NA's__
+
+__A análise visual dos dados, nos mostra que para ambas variáveis o comportamento para o status, "Bom" ou "Ruim" apresenta a média muito próxima, concluindo assim que não apresentam forte valor explicativo para o modelo.__
+
+__Optei pela retirada dos NA's e inclusão da média para variável.__
 ```{r }
-#A análise visual dos dados, nos mostra que para ambas variáveis o comportamento para o status, "Bom" ou "Ruim" apresenta a média muito próxima, concluindo assim que não apresentam forte valor explicativo para o modelo. 
-#Optei pela retirada dos NA's e inclusão da média para variável. 
+
  
   df_credito_ajustado <- df_credito_ajustado %>%
   replace_na(replace = list(renda = mean(df_credito_ajustado$renda, na.rm = TRUE),
@@ -141,12 +146,211 @@ Retirada dos NA's
 
 ```
 
-```{r}
-#O data.frame agora está organizado e limpo. 
+__Etapa 2: Caracteristicas demograficas e financeiras dos clientes presentes na base de dados.__
 
+__Na etapa inicial, foi realizada analise gráfica e o mapeamento de algumas variáveis, conforme abaixo:__
+
+```{r include=FALSE}
+
+df_credito_ajustado <- df_credito_ajustado %>%
+  mutate(faixa_etaria = case_when(idade<=25 ~ "1.Abaixo dos 25 anos",
+                                  idade<=35 ~ "2.Entre 26 e 35 anos",
+                                  idade<=45 ~ "3.Entre 36 e 45 anos",
+                                  idade<=55 ~ "4.Entre 46 e 55 anos",
+                                  idade>55 ~"5.Acima dos 55 anos")) %>%
+  relocate(faixa_etaria, .after = idade)
+
+df_credito_ajustado <- df_credito_ajustado %>%
+  mutate(faixa_tempo_empresa = case_when(tempo_empresa<=2 ~ "1. Abaixo dos 2 anos",
+                                  tempo_empresa <= 4 ~ "2. Entre 3 e 4 anos",
+                                  tempo_empresa <= 6 ~ "3. Entre 5 e 6 anos",
+                                  tempo_empresa <= 8 ~ "4. Entre 7 e 8 anos",
+                                  tempo_empresa <= 10 ~ "5. Entre 9 e 10 anos",
+                                  tempo_empresa<=15 ~ "6. Entre 11 e 15 anos",
+                                  tempo_empresa<=20 ~ "7. Entre 16 e 20 anos",
+                                  tempo_empresa<=25 ~ "8. Entre 21 e 25 anos",
+                                  tempo_empresa<=36 ~ "9. Entre 26 e 35 anos",
+                                  tempo_empresa>36 ~"Acima dos 36 anos")) %>%
+  relocate(faixa_tempo_empresa, .after = tempo_empresa)
+
+ tab_faixa_tempoempre <-  df_credito_ajustado %>%
+    group_by(faixa_tempo_empresa, status) %>% 
+    summarise(contagem = n()) %>% 
+    arrange(desc(faixa_tempo_empresa)) %>% 
+    spread(status, contagem) %>%
+    mutate(prop.bons.ruins = bom/ruim)
+ 
+ tab_faixa_etaria <- df_credito_ajustado %>%
+  group_by(faixa_etaria, status) %>% 
+  summarise(contagem = n()) %>% 
+  arrange(desc(faixa_etaria)) %>% 
+  spread(status, contagem) %>%
+  mutate(prop.bons.ruins = bom/ruim)
+ 
+ 
+dist_por_perfil <- grafico_status <- ggplot()+
+  aes(x = df_credito_ajustado$status)+
+  geom_bar(width = 0.4, fill = "#0c4c8a")+
+  labs( title = "Perfil: Bom x Ruim",
+        x = "Perfil",
+        y = "Quantidade")+
+  theme_gray()+
+  theme(
+    legend.position = "right",
+    plot.title = element_text(
+      hjust = 0.5
+    )
+  )
+
+dist_por_faixa_eta <- grafico_faixa_etaria <- ggplot()+
+  aes(x = df_credito_ajustado$faixa_etaria)+
+  geom_bar(width = 0.7, fill = "#0c4c8a")+
+  coord_flip()+
+  labs( title = "Perfil Etário",
+        x = "Faixa Etária",
+        y = "Quantidade")+
+  theme_gray()+
+  theme(
+    legend.position = "right",
+    plot.title = element_text(
+      hjust = 0.5
+    ))
+
+gambia <- df_credito_ajustado %>% 
+  filter(estado_civil != "indefinido")
+  
+grafico_estado_civil <- ggplot(gambia)+
+  aes(x = estado_civil)+
+  geom_bar(width = 0.4, fill = "#0c4c8a")+
+  labs( title = "Estado Civil",
+        x = "Situação",
+        y = "Quantidade")+
+  theme_gray()+
+  theme(
+    axis.text.x = element_text(angle=45, hjust=1),
+    legend.position = "right",
+    plot.title = element_text(
+      hjust = 0.5
+    )
+  )
+
+
+tab_estado_civ <- df_credito_ajustado %>%
+  group_by(estado_civil, status) %>%
+  summarise(contagem = n()) %>%
+  arrange(desc(estado_civil)) %>%
+  spread(status, contagem) %>%
+  mutate(prop.bons.ruins = bom/ruim) %>% 
+  filter(!is.na(prop.bons.ruins)) %>% 
+  arrange(prop.bons.ruins)
+
+ ggplot(tab_estado_civ) +
+   aes(x = estado_civil, weight = prop.bons.ruins) +
+   geom_bar(fill = "#0c4c8a") +
+   coord_flip()+
+   labs( title = "Bons Pagadores: (+) Tempo de Empresa ",
+         x = "Tempo de Empresa",
+         y = "Proporção: Bons/Ruins")+
+   theme_gray()+
+   theme(
+     legend.position = "right",
+     plot.title = element_text(
+       hjust = 0.5
+     ))
 
 
 ```
 
+```{r}
 
+
+dist_por_perfil + grafico_estado_civil + dist_por_faixa_eta
+
+
+```
+
+__Por fim uma análise dentro das variáveis analisadas, buscando a proporcão de bons pagadores de forma ampla__
+
+```{r include=FALSE }
+tab_faixa_tempoempre <-  df_credito_ajustado %>%
+    group_by(faixa_tempo_empresa, status) %>%
+    summarise(contagem = n()) %>%
+    arrange(desc(faixa_tempo_empresa)) %>%
+    spread(status, contagem) %>%
+    mutate(prop.bons.ruins = bom/ruim) 
+
+
+
+tab_estado_civ <- df_credito_ajustado %>%
+  group_by(estado_civil, status) %>%
+  summarise(contagem = n()) %>%
+  arrange(desc(estado_civil)) %>%
+  spread(status, contagem) %>%
+  mutate(prop.bons.ruins = bom/ruim) %>% 
+  filter(!is.na(prop.bons.ruins)) %>% 
+  arrange(prop.bons.ruins)
+
+
+tab_faixa_etaria <- df_credito_ajustado %>%
+  group_by(faixa_etaria, status) %>%
+  summarise(contagem = n()) %>%
+  arrange(desc(faixa_etaria)) %>%
+  spread(status, contagem) %>%
+  mutate(prop.bons.ruins = bom/ruim)
+
+
+prop.faixa.et <- ggplot(tab_faixa_etaria) +
+  aes(x = faixa_etaria, weight = prop.bons.ruins) +
+  geom_bar(fill = "#0c4c8a") +
+  coord_flip()+
+  labs( title = "Bons Pagadores: Maior faixa etária",
+        x = "Tempo de Empresa",
+        y = "Proporção: Bons/Ruins")+
+  theme_gray()+
+  theme(
+    legend.position = "right",
+    plot.title = element_text(
+      hjust = 0.5
+    ))
+
+prop.tempo.emp <- ggplot(tab_faixa_tempoempre) +
+   aes(x = faixa_tempo_empresa, weight = prop.bons.ruins) +
+   geom_bar(fill = "#0c4c8a") +
+   coord_flip()+
+   labs( title = "Bons Pagadores: (+) Tempo de Empresa ",
+         x = "Tempo de Empresa",
+         y = "Proporção: Bons/Ruins")+
+   theme_gray()+
+   theme(
+     legend.position = "right",
+     plot.title = element_text(
+       hjust = 0.5
+     ))
+
+prop.est.civi <- ggplot(tab_estado_civ) +
+   aes(x = estado_civil, weight = prop.bons.ruins) +
+   geom_bar(fill = "#0c4c8a") +
+   labs( title = "Bons Pagadores: Estado Civil ",
+         x = "Tempo de Empresa",
+         y = "Proporção: Bons/Ruins")+
+   theme_gray()+
+   theme(
+     legend.position = "right",
+     plot.title = element_text(
+       hjust = 0.5
+     ))
+
+```
+
+```{r}
+prop.faixa.et
+```
+
+```{r}
+prop.tempo.emp
+```
+
+```{r}
+prop.est.civi 
+```
 
