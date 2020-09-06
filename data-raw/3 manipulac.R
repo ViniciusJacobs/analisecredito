@@ -16,7 +16,7 @@ df_credito_ajustado <- df_credito_ajustado %>%
                                   idade>55 ~"5.Acima dos 55 anos")) %>%
   relocate(faixa_etaria, .after = idade)
 
-View(df_credito_ajustado)
+
 
 tab_faixa_etaria <- df_credito_ajustado %>%
   group_by(faixa_etaria, status) %>%

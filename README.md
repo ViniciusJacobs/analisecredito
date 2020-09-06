@@ -16,6 +16,8 @@
 library(tidyverse)
 library(tidyr)
 library(patchwork)
+library(caret)
+library(randomForest)
 devtools::load_all()
 ```
 
@@ -133,3 +135,59 @@ prop.est.civi
 ![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 **Etapa 3: Elaborar modelo preditivo para o modelo**
+
+**Ajustes nas Variáveis**
+
+``` r
+# Normalizando as variáveis
+
+numeric.vars <- c("tempo_empresa", "tempo_emprestimo", "idade",
+                  "despesas","renda","ativos","dividas", "valor_emprestimo","preco_do_bem")
+
+
+df_credito_ajustado_previ <- scale.features(df_credito_ajustado_previ, numeric.vars)
+
+#Variáveis tipo Fator
+categorical.vars <- c('status_bin', 'faixa_tempo_empresa', 'faixa_etaria',
+                      'estado_civil', 'trabalho', "moradia","registros")
+
+df_credito_ajustado_previ <- to.factors(df = df_credito_ajustado_previ, variables = categorical.vars)
+
+
+glimpse(df_credito_ajustado_previ)
+```
+
+    ## Rows: 4,454
+    ## Columns: 16
+    ## $ status_bin          <fct> 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1,...
+    ## $ tempo_empresa       <dbl[,1]> <matrix[26 x 1]>
+    ## $ faixa_tempo_empresa <fct> 5. Entre 9 e 10 anos, 7. Entre 16 e 20 anos, 5....
+    ## $ moradia             <fct> alugada, alugada, própria, alugada, alugada, pr...
+    ## $ tempo_emprestimo    <dbl[,1]> <matrix[26 x 1]>
+    ## $ idade               <dbl[,1]> <matrix[26 x 1]>
+    ## $ faixa_etaria        <fct> 2.Entre 26 e 35 anos, 5.Acima dos 55 anos, 4.En...
+    ## $ estado_civil        <fct> casada(o), viúva(o), casada(o), solteira(o), so...
+    ## $ registros           <fct> não, não, sim, não, não, não, não, não, não, nã...
+    ## $ trabalho            <fct> autônomo, fixo, autônomo, fixo, fixo, fixo, fix...
+    ## $ despesas            <dbl[,1]> <matrix[26 x 1]>
+    ## $ renda               <dbl[,1]> <matrix[26 x 1]>
+    ## $ ativos              <dbl[,1]> <matrix[26 x 1]>
+    ## $ dividas             <dbl[,1]> <matrix[26 x 1]>
+    ## $ valor_emprestimo    <dbl[,1]> <matrix[26 x 1]>
+    ## $ preco_do_bem        <dbl[,1]> <matrix[26 x 1]>
+
+**Divisão do data.frame em treino e teste**
+
+``` r
+# Dividindo os dados em treino e teste - 60:40
+indexes <- sample(1:nrow(df_credito_ajustado_previ), size = 0.6 * nrow(df_credito_ajustado_previ))
+train.data <- df_credito_ajustado_previ[indexes,]
+test.data <- df_credito_ajustado_previ[-indexes,]
+```
+
+**Avaliando as variáveis que mais explicam o modelo**
+
+``` r
+#rfe.results <- run.feature.selection(feature.vars = train.data[,-1],
+                                     #class.var = train.data[,1])
+```

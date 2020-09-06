@@ -29,3 +29,7 @@ df_credito_ajustado <- df_credito_ajustado %>%
   tidyr::replace_na(replace = list(renda = mean(df_credito_ajustado$renda, na.rm = TRUE),
                                    ativos = mean(df_credito_ajustado$ativos, na.rm = TRUE),
                                    dividas = mean(df_credito_ajustado$dividas, na.rm = TRUE)))
+
+
+glimpse(df_credito_ajustado)
+
