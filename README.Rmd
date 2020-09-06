@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Análise de Perfil: Concessão de Crédito
 
+
 ## Objetivo
   
 - Demonstrar algumas técnicas de AED; 
@@ -42,7 +43,6 @@ __Contagem dos valores NAs por váriavel do modelo__
 
 titulos_col <- df_credito %>%
   names
-
 
 for(i in 1:length(titulos_col)){
  x <- contagem_nas(df_credito, titulos_col[i])[[1]]
@@ -190,7 +190,7 @@ df_credito_ajustado <- df_credito_ajustado %>%
  
 dist_por_perfil <- grafico_status <- ggplot()+
   aes(x = df_credito_ajustado$status)+
-  geom_bar(width = 0.4, fill = "#0c4c8a")+
+  geom_bar(width = 0.3, fill = "#0c4c8a")+
   labs( title = "Perfil: Bom x Ruim",
         x = "Perfil",
         y = "Quantidade")+
@@ -204,7 +204,7 @@ dist_por_perfil <- grafico_status <- ggplot()+
 
 dist_por_faixa_eta <- grafico_faixa_etaria <- ggplot()+
   aes(x = df_credito_ajustado$faixa_etaria)+
-  geom_bar(width = 0.7, fill = "#0c4c8a")+
+  geom_bar(width = 0.5, fill = "#0c4c8a")+
   coord_flip()+
   labs( title = "Perfil Etário",
         x = "Faixa Etária",
@@ -216,23 +216,23 @@ dist_por_faixa_eta <- grafico_faixa_etaria <- ggplot()+
       hjust = 0.5
     ))
 
-gambia <- df_credito_ajustado %>% 
-  filter(estado_civil != "indefinido")
-  
-grafico_estado_civil <- ggplot(gambia)+
+grafico_estado_civil <- df_credito_ajustado %>%
+  filter(estado_civil != "indefinido") %>% 
+  ggplot()+
   aes(x = estado_civil)+
-  geom_bar(width = 0.4, fill = "#0c4c8a")+
+  geom_bar(width = 0.5, fill = "#0c4c8a")+
   labs( title = "Estado Civil",
         x = "Situação",
         y = "Quantidade")+
   theme_gray()+
   theme(
-    axis.text.x = element_text(angle=45, hjust=1),
+    axis.text.x = element_text(angle=35, hjust=1, size = 11),
     legend.position = "right",
     plot.title = element_text(
       hjust = 0.5
     )
   )
+
 
 
 tab_estado_civ <- df_credito_ajustado %>%
@@ -246,7 +246,7 @@ tab_estado_civ <- df_credito_ajustado %>%
 
  ggplot(tab_estado_civ) +
    aes(x = estado_civil, weight = prop.bons.ruins) +
-   geom_bar(fill = "#0c4c8a") +
+   geom_bar(width = 0.5, fill = "#0c4c8a") +
    coord_flip()+
    labs( title = "Bons Pagadores: (+) Tempo de Empresa ",
          x = "Tempo de Empresa",
@@ -301,7 +301,7 @@ tab_faixa_etaria <- df_credito_ajustado %>%
 
 prop.faixa.et <- ggplot(tab_faixa_etaria) +
   aes(x = faixa_etaria, weight = prop.bons.ruins) +
-  geom_bar(fill = "#0c4c8a") +
+  geom_bar(width = 0.5, fill = "#0c4c8a") +
   coord_flip()+
   labs( title = "Bons Pagadores: Maior faixa etária",
         x = "Tempo de Empresa",
@@ -315,7 +315,7 @@ prop.faixa.et <- ggplot(tab_faixa_etaria) +
 
 prop.tempo.emp <- ggplot(tab_faixa_tempoempre) +
    aes(x = faixa_tempo_empresa, weight = prop.bons.ruins) +
-   geom_bar(fill = "#0c4c8a") +
+   geom_bar(width = 0.5, fill = "#0c4c8a") +
    coord_flip()+
    labs( title = "Bons Pagadores: (+) Tempo de Empresa ",
          x = "Tempo de Empresa",
@@ -327,9 +327,10 @@ prop.tempo.emp <- ggplot(tab_faixa_tempoempre) +
        hjust = 0.5
      ))
 
+
 prop.est.civi <- ggplot(tab_estado_civ) +
    aes(x = estado_civil, weight = prop.bons.ruins) +
-   geom_bar(fill = "#0c4c8a") +
+   geom_bar(width = 0.5, fill = "#0c4c8a") +
    labs( title = "Bons Pagadores: Estado Civil ",
          x = "Tempo de Empresa",
          y = "Proporção: Bons/Ruins")+
