@@ -50,6 +50,20 @@ glimpse(df_credito)
 
 **Contagem dos valores NAs por váriavel do modelo**
 
+``` r
+titulos_col <- df_credito %>%
+  names
+
+for(i in 1:length(titulos_col)){
+ x <- contagem_nas(df_credito, titulos_col[i])[[1]]
+  if(x>0){
+   print(titulos_col[i])
+   print(x)
+  }
+
+}
+```
+
     ## [1] "moradia"
     ## [1] 26
     ## [1] "estado_civil"
@@ -68,7 +82,7 @@ glimpse(df_credito)
 **As variáveis moradia, estado\_civil e trabalho, apresentaram um número
 de NA’s pouco expressivo, foi considerado como ERRO no cadastro. Para
 esse estudo não foi feita análise, mas sim a alteração dos campos NA’s
-para indefinido.**
+para “indefinido”.**
 
 ``` r
 df_credito_ajustado <- df_credito%>%
@@ -88,10 +102,8 @@ grafico_rel_renda + grafico_rel_dividas + grafico_rel_ativos
 
 **Retirada dos NA’s**
 
-**A análise visual dos dados, nos mostra que para ambas variáveis o
-comportamento para o status, “Bom” ou “Ruim” apresenta a média muito
-próxima, concluindo assim que não apresentam forte valor explicativo
-para o modelo.**
+**A análise visual dos dados, nos mostra que ambas variáveis tem
+distribuição próxima a média para o status, “Bom” ou “Ruim”.**
 
 **Optei pela retirada dos NA’s e inclusão da média para variável.**
 
@@ -118,7 +130,7 @@ dist_por_perfil + grafico_estado_civil + dist_por_faixa_eta
 proporcão de bons pagadores de forma ampla**
 
 ``` r
-prop.faixa.et
+prop.faixa.et 
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
@@ -204,54 +216,54 @@ rfe.results
     ## Resampling performance over subset size:
     ## 
     ##  Variables Accuracy  Kappa AccuracySD KappaSD Selected
-    ##          1   0.7391 0.2651    0.03574 0.10480         
-    ##          2   0.7492 0.3605    0.03613 0.08886         
-    ##          3   0.7698 0.3628    0.03097 0.08534         
-    ##          4   0.7540 0.3439    0.03420 0.09304         
-    ##          5   0.7563 0.3466    0.03035 0.08903         
-    ##          6   0.7716 0.3856    0.03206 0.09310         
-    ##          7   0.7716 0.3858    0.02859 0.08205         
-    ##          8   0.7806 0.4037    0.03591 0.10070         
-    ##          9   0.7776 0.4026    0.03924 0.11141         
-    ##         10   0.7836 0.4168    0.04026 0.11211         
-    ##         15   0.7915 0.4231    0.03225 0.09583        *
+    ##          1   0.7338 0.2453    0.02279 0.07145         
+    ##          2   0.7424 0.3254    0.02518 0.08160         
+    ##          3   0.7533 0.3125    0.02589 0.07862         
+    ##          4   0.7447 0.3037    0.02625 0.08138         
+    ##          5   0.7593 0.3548    0.02497 0.06619         
+    ##          6   0.7780 0.4032    0.03038 0.08432         
+    ##          7   0.7724 0.3861    0.03303 0.08857         
+    ##          8   0.7776 0.3954    0.02585 0.07125         
+    ##          9   0.7795 0.4086    0.02525 0.06840         
+    ##         10   0.7803 0.4068    0.03424 0.09437         
+    ##         15   0.7821 0.3925    0.02380 0.07250        *
     ## 
     ## The top 5 variables (out of 15):
-    ##    registros, trabalho, tempo_empresa, renda, valor_emprestimo
+    ##    registros, trabalho, renda, valor_emprestimo, tempo_empresa
 
 ``` r
 varImp((rfe.results))
 ```
 
     ##                       Overall
-    ## registros           32.107797
-    ## trabalho            24.707511
-    ## tempo_empresa       19.089927
-    ## renda               17.938109
-    ## valor_emprestimo    16.138166
-    ## ativos              14.246823
-    ## faixa_tempo_empresa 12.371178
-    ## moradia             11.818348
-    ## despesas             8.658376
-    ## tempo_emprestimo     7.774263
-    ## idade                6.633562
-    ## preco_do_bem         5.483701
-    ## faixa_etaria         4.432108
-    ## dividas              2.131132
-    ## estado_civil         1.955963
+    ## registros           29.187064
+    ## trabalho            25.542825
+    ## renda               19.521500
+    ## valor_emprestimo    17.582717
+    ## tempo_empresa       16.763034
+    ## ativos              16.603801
+    ## faixa_tempo_empresa 11.436808
+    ## moradia              9.305382
+    ## tempo_emprestimo     6.700527
+    ## despesas             6.246103
+    ## idade                6.227962
+    ## preco_do_bem         6.209147
+    ## estado_civil         3.538029
+    ## faixa_etaria         2.737623
+    ## dividas              1.417824
 
 **As variáveis que apresentaram maior relação explicativa a relação bom
 ou mau pagador (conforme esse modelo) são:**
 
-**registros 30.047797**
+**-registros**
 
-**trabalho 26.646050**
+**-trabalho**
 
-**tempo\_empresa 19.280090**
+**-tempo\_empresa**
 
-**renda 19.067687**
+**-renda**
 
-**valor-emprestimo 17.874087**
+**-valor-emprestimo**
 
 **Na análise descritiva realizada no início do estudo foram avaliadas
 faixa etária, tempo de trabalho na empresa e estado civil. Nota-se, que
@@ -278,50 +290,50 @@ summary(lr.model)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -2.9905  -0.5830   0.3716   0.6754   2.5500  
+    ## -3.0694  -0.6158   0.4000   0.6933   2.4424  
     ## 
     ## Coefficients:
     ##                                            Estimate Std. Error z value Pr(>|z|)
-    ## (Intercept)                                 1.22181    0.52429   2.330 0.019785
-    ## tempo_empresa                               1.27805    0.47130   2.712 0.006693
-    ## faixa_tempo_empresa2. Entre 3 e 4 anos     -0.02934    0.21195  -0.138 0.889909
-    ## faixa_tempo_empresa3. Entre 5 e 6 anos     -0.08858    0.30857  -0.287 0.774072
-    ## faixa_tempo_empresa4. Entre 7 e 8 anos     -0.07861    0.44500  -0.177 0.859784
-    ## faixa_tempo_empresa5. Entre 9 e 10 anos    -0.19545    0.55730  -0.351 0.725808
-    ## faixa_tempo_empresa6. Entre 11 e 15 anos   -0.64334    0.72280  -0.890 0.373429
-    ## faixa_tempo_empresa7. Entre 16 e 20 anos   -0.85167    1.02602  -0.830 0.406500
-    ## faixa_tempo_empresa8. Entre 21 e 25 anos   -1.48725    1.32654  -1.121 0.262226
-    ## faixa_tempo_empresa9. Entre 26 e 35 anos   -2.84919    1.67902  -1.697 0.089708
-    ## faixa_tempo_empresaAcima dos 36 anos        8.47702  288.45384   0.029 0.976555
-    ## moradiaindefinido                          -0.28698    0.67099  -0.428 0.668868
-    ## moradiaoutras                              -0.27104    0.21644  -1.252 0.210485
-    ## moradiapais                                 0.56886    0.17861   3.185 0.001447
-    ## moradiapriv                                 0.11667    0.24567   0.475 0.634838
-    ## moradiaprópria                              0.71893    0.14624   4.916 8.83e-07
-    ## tempo_emprestimo                           -0.02782    0.06726  -0.414 0.679186
-    ## idade                                       0.03022    0.22299   0.136 0.892210
-    ## faixa_etaria2.Entre 26 e 35 anos            0.31757    0.21613   1.469 0.141733
-    ## faixa_etaria3.Entre 36 e 45 anos           -0.12560    0.37852  -0.332 0.740017
-    ## faixa_etaria4.Entre 46 e 55 anos           -0.11397    0.57323  -0.199 0.842408
-    ## faixa_etaria5.Acima dos 55 anos            -0.33620    0.78442  -0.429 0.668220
-    ## estado_civildivorciada(o)                  -0.53612    0.57824  -0.927 0.353845
-    ## estado_civilseparada(o)                    -0.87594    0.29744  -2.945 0.003230
-    ## estado_civilsolteira(o)                    -0.24247    0.16994  -1.427 0.153630
-    ## estado_civilviúva(o)                       -0.15629    0.45023  -0.347 0.728486
-    ## registrossim                               -1.82390    0.13456 -13.554  < 2e-16
-    ## trabalhofixo                                0.85113    0.13431   6.337 2.34e-10
-    ## trabalhoindefinido                        -14.62958 1455.39770  -0.010 0.991980
-    ## trabalhomeio período                       -0.58480    0.18720  -3.124 0.001785
-    ## trabalhooutros                              0.15803    0.26790   0.590 0.555274
-    ## despesas                                   -0.26317    0.06802  -3.869 0.000109
-    ## renda                                       0.51393    0.06928   7.418 1.19e-13
-    ## ativos                                      0.36987    0.09926   3.726 0.000194
-    ## dividas                                    -0.22206    0.05457  -4.069 4.72e-05
-    ## valor_emprestimo                           -0.83850    0.10724  -7.819 5.32e-15
-    ## preco_do_bem                                0.46350    0.10395   4.459 8.23e-06
+    ## (Intercept)                                0.479719   0.502205   0.955 0.339463
+    ## tempo_empresa                              0.447114   0.455837   0.981 0.326660
+    ## faixa_tempo_empresa2. Entre 3 e 4 anos     0.336222   0.209983   1.601 0.109335
+    ## faixa_tempo_empresa3. Entre 5 e 6 anos     0.390558   0.307568   1.270 0.204147
+    ## faixa_tempo_empresa4. Entre 7 e 8 anos     0.555982   0.428314   1.298 0.194263
+    ## faixa_tempo_empresa5. Entre 9 e 10 anos    0.534453   0.538346   0.993 0.320823
+    ## faixa_tempo_empresa6. Entre 11 e 15 anos   0.415233   0.695937   0.597 0.550740
+    ## faixa_tempo_empresa7. Entre 16 e 20 anos   1.008333   0.997825   1.011 0.312241
+    ## faixa_tempo_empresa8. Entre 21 e 25 anos   0.845337   1.296151   0.652 0.514278
+    ## faixa_tempo_empresa9. Entre 26 e 35 anos  -0.007154   1.667556  -0.004 0.996577
+    ## faixa_tempo_empresaAcima dos 36 anos      -0.155493   2.455106  -0.063 0.949500
+    ## moradiaindefinido                         -0.726578   0.615693  -1.180 0.237962
+    ## moradiaoutras                             -0.397661   0.210890  -1.886 0.059345
+    ## moradiapais                                0.361633   0.173065   2.090 0.036656
+    ## moradiapriv                                0.086019   0.244349   0.352 0.724813
+    ## moradiaprópria                             0.657256   0.147066   4.469 7.85e-06
+    ## tempo_emprestimo                          -0.054175   0.065514  -0.827 0.408283
+    ## idade                                     -0.153131   0.215838  -0.709 0.478032
+    ## faixa_etaria2.Entre 26 e 35 anos           0.176754   0.210362   0.840 0.400776
+    ## faixa_etaria3.Entre 36 e 45 anos           0.142088   0.367555   0.387 0.699071
+    ## faixa_etaria4.Entre 46 e 55 anos           0.139069   0.555964   0.250 0.802478
+    ## faixa_etaria5.Acima dos 55 anos            0.143697   0.752303   0.191 0.848518
+    ## estado_civildivorciada(o)                 -0.276181   0.509262  -0.542 0.587601
+    ## estado_civilseparada(o)                   -1.357698   0.300220  -4.522 6.12e-06
+    ## estado_civilsolteira(o)                   -0.231553   0.166317  -1.392 0.163850
+    ## estado_civilviúva(o)                      -0.318691   0.456078  -0.699 0.484699
+    ## registrossim                              -1.746111   0.133105 -13.118  < 2e-16
+    ## trabalhofixo                               0.778825   0.131090   5.941 2.83e-09
+    ## trabalhoindefinido                       -12.439337 378.006235  -0.033 0.973748
+    ## trabalhomeio período                      -0.653020   0.185409  -3.522 0.000428
+    ## trabalhooutros                             0.229837   0.273517   0.840 0.400738
+    ## despesas                                  -0.241855   0.067490  -3.584 0.000339
+    ## renda                                      0.508890   0.069929   7.277 3.41e-13
+    ## ativos                                     0.260487   0.092909   2.804 0.005052
+    ## dividas                                   -0.155241   0.067931  -2.285 0.022297
+    ## valor_emprestimo                          -0.778657   0.103688  -7.510 5.93e-14
+    ## preco_do_bem                               0.451289   0.102042   4.423 9.75e-06
     ##                                             
-    ## (Intercept)                              *  
-    ## tempo_empresa                            ** 
+    ## (Intercept)                                 
+    ## tempo_empresa                               
     ## faixa_tempo_empresa2. Entre 3 e 4 anos      
     ## faixa_tempo_empresa3. Entre 5 e 6 anos      
     ## faixa_tempo_empresa4. Entre 7 e 8 anos      
@@ -329,11 +341,11 @@ summary(lr.model)
     ## faixa_tempo_empresa6. Entre 11 e 15 anos    
     ## faixa_tempo_empresa7. Entre 16 e 20 anos    
     ## faixa_tempo_empresa8. Entre 21 e 25 anos    
-    ## faixa_tempo_empresa9. Entre 26 e 35 anos .  
+    ## faixa_tempo_empresa9. Entre 26 e 35 anos    
     ## faixa_tempo_empresaAcima dos 36 anos        
     ## moradiaindefinido                           
-    ## moradiaoutras                               
-    ## moradiapais                              ** 
+    ## moradiaoutras                            .  
+    ## moradiapais                              *  
     ## moradiapriv                                 
     ## moradiaprópria                           ***
     ## tempo_emprestimo                            
@@ -343,18 +355,18 @@ summary(lr.model)
     ## faixa_etaria4.Entre 46 e 55 anos            
     ## faixa_etaria5.Acima dos 55 anos             
     ## estado_civildivorciada(o)                   
-    ## estado_civilseparada(o)                  ** 
+    ## estado_civilseparada(o)                  ***
     ## estado_civilsolteira(o)                     
     ## estado_civilviúva(o)                        
     ## registrossim                             ***
     ## trabalhofixo                             ***
     ## trabalhoindefinido                          
-    ## trabalhomeio período                     ** 
+    ## trabalhomeio período                     ***
     ## trabalhooutros                              
     ## despesas                                 ***
     ## renda                                    ***
-    ## ativos                                   ***
-    ## dividas                                  ***
+    ## ativos                                   ** 
+    ## dividas                                  *  
     ## valor_emprestimo                         ***
     ## preco_do_bem                             ***
     ## ---
@@ -362,11 +374,11 @@ summary(lr.model)
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
-    ##     Null deviance: 3171.6  on 2670  degrees of freedom
-    ## Residual deviance: 2286.4  on 2634  degrees of freedom
-    ## AIC: 2360.4
+    ##     Null deviance: 3164.0  on 2670  degrees of freedom
+    ## Residual deviance: 2367.6  on 2634  degrees of freedom
+    ## AIC: 2441.6
     ## 
-    ## Number of Fisher Scoring iterations: 14
+    ## Number of Fisher Scoring iterations: 12
 
 **Testando o modelo nos dados de teste e avaliando a ConfusionMatrix**
 
@@ -381,35 +393,29 @@ confusionMatrix(table(data = lr.predictions, reference = test.class.var), positi
     ## 
     ##     reference
     ## data    0    1
-    ##    0  240  105
-    ##    1  264 1173
+    ##    0  265  109
+    ##    1  243 1165
     ##                                           
-    ##                Accuracy : 0.7929          
-    ##                  95% CI : (0.7734, 0.8115)
-    ##     No Information Rate : 0.7172          
-    ##     P-Value [Acc > NIR] : 1.494e-13       
+    ##                Accuracy : 0.8025          
+    ##                  95% CI : (0.7832, 0.8207)
+    ##     No Information Rate : 0.7149          
+    ##     P-Value [Acc > NIR] : < 2.2e-16       
     ##                                           
-    ##                   Kappa : 0.4356          
+    ##                   Kappa : 0.4737          
     ##                                           
-    ##  Mcnemar's Test P-Value : < 2.2e-16       
+    ##  Mcnemar's Test P-Value : 1.352e-12       
     ##                                           
-    ##             Sensitivity : 0.9178          
-    ##             Specificity : 0.4762          
-    ##          Pos Pred Value : 0.8163          
-    ##          Neg Pred Value : 0.6957          
-    ##              Prevalence : 0.7172          
-    ##          Detection Rate : 0.6582          
-    ##    Detection Prevalence : 0.8064          
-    ##       Balanced Accuracy : 0.6970          
+    ##             Sensitivity : 0.9144          
+    ##             Specificity : 0.5217          
+    ##          Pos Pred Value : 0.8274          
+    ##          Neg Pred Value : 0.7086          
+    ##              Prevalence : 0.7149          
+    ##          Detection Rate : 0.6538          
+    ##    Detection Prevalence : 0.7901          
+    ##       Balanced Accuracy : 0.7180          
     ##                                           
     ##        'Positive' Class : 1               
     ## 
-
-**O modelo apresentou uma Accuracy : 0.7963**
-
-**A matriz de confusão traz que quando o valor original era 0 nosso
-modelo acertou 242 e errou 98, e quando era 1 nosso modelo errou 265 e
-acertou 1177.**
 
 **Em um primeiro momento poderiamos dizer o que o modelo está com um bom
 nível de Accuracy, mas da pra melhorar?**
@@ -420,15 +426,6 @@ formula <- "status_bin ~ ."
 formula <- as.formula(formula)
 control <- trainControl(method = "repeatedcv", number = 10, repeats = 2)
 model <- train(formula, data = train.data, method = "glm", trControl = control)
-```
-
-    ## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
-    ## prediction from a rank-deficient fit may be misleading
-    
-    ## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
-    ## prediction from a rank-deficient fit may be misleading
-
-``` r
 importance <- varImp(model, scale = FALSE)
 plot(importance)
 ```
@@ -472,42 +469,42 @@ summary(lr.model.new)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -2.9883  -0.5991   0.3852   0.6841   2.4854  
+    ## -3.0221  -0.6303   0.4133   0.6921   2.4137  
     ## 
     ## Coefficients:
     ##                            Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)                 0.91119    0.15451   5.897 3.70e-09 ***
-    ## registrossim               -1.82306    0.13281 -13.727  < 2e-16 ***
-    ## valor_emprestimo           -0.88367    0.09336  -9.465  < 2e-16 ***
-    ## renda                       0.52662    0.06885   7.649 2.02e-14 ***
-    ## trabalhofixo                0.85932    0.13049   6.585 4.54e-11 ***
-    ## trabalhoindefinido        -11.99368  324.74442  -0.037 0.970539    
-    ## trabalhomeio período       -0.67817    0.18094  -3.748 0.000178 ***
-    ## trabalhooutros             -0.04912    0.24524  -0.200 0.841244    
-    ## preco_do_bem                0.49748    0.09951   4.999 5.76e-07 ***
-    ## moradiaindefinido          -0.26301    0.67339  -0.391 0.696112    
-    ## moradiaoutras              -0.27688    0.21213  -1.305 0.191809    
-    ## moradiapais                 0.57196    0.17443   3.279 0.001041 ** 
-    ## moradiapriv                 0.13242    0.24218   0.547 0.584525    
-    ## moradiaprópria              0.72371    0.14357   5.041 4.63e-07 ***
-    ## estado_civildivorciada(o)  -0.51875    0.57186  -0.907 0.364342    
-    ## estado_civilseparada(o)    -0.87515    0.28997  -3.018 0.002544 ** 
-    ## estado_civilsolteira(o)    -0.27006    0.15926  -1.696 0.089950 .  
-    ## estado_civilviúva(o)       -0.25450    0.44943  -0.566 0.571212    
-    ## ativos                      0.33355    0.09415   3.543 0.000396 ***
-    ## despesas                   -0.27552    0.06514  -4.230 2.34e-05 ***
-    ## dividas                    -0.20320    0.05192  -3.914 9.09e-05 ***
-    ## tempo_empresa               0.70535    0.07688   9.175  < 2e-16 ***
+    ## (Intercept)                 0.93590    0.15512   6.034 1.60e-09 ***
+    ## registrossim               -1.73428    0.13122 -13.217  < 2e-16 ***
+    ## valor_emprestimo           -0.81501    0.09101  -8.955  < 2e-16 ***
+    ## renda                       0.50779    0.06918   7.340 2.14e-13 ***
+    ## trabalhofixo                0.78460    0.12748   6.155 7.53e-10 ***
+    ## trabalhoindefinido        -12.61359  377.75358  -0.033  0.97336    
+    ## trabalhomeio período       -0.74185    0.17841  -4.158 3.21e-05 ***
+    ## trabalhooutros              0.01209    0.25314   0.048  0.96192    
+    ## preco_do_bem                0.47715    0.09802   4.868 1.13e-06 ***
+    ## moradiaindefinido          -0.70007    0.60165  -1.164  0.24460    
+    ## moradiaoutras              -0.36371    0.20798  -1.749  0.08033 .  
+    ## moradiapais                 0.42080    0.16988   2.477  0.01324 *  
+    ## moradiapriv                 0.09849    0.24019   0.410  0.68178    
+    ## moradiaprópria              0.65072    0.14478   4.495 6.97e-06 ***
+    ## estado_civildivorciada(o)  -0.30215    0.50509  -0.598  0.54970    
+    ## estado_civilseparada(o)    -1.33117    0.29466  -4.518 6.25e-06 ***
+    ## estado_civilsolteira(o)    -0.21519    0.15629  -1.377  0.16854    
+    ## estado_civilviúva(o)       -0.39040    0.45488  -0.858  0.39076    
+    ## ativos                      0.24066    0.08932   2.694  0.00705 ** 
+    ## despesas                   -0.23934    0.06412  -3.733  0.00019 ***
+    ## dividas                    -0.13782    0.06592  -2.091  0.03656 *  
+    ## tempo_empresa               0.61726    0.07262   8.500  < 2e-16 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
-    ##     Null deviance: 3171.6  on 2670  degrees of freedom
-    ## Residual deviance: 2313.9  on 2649  degrees of freedom
-    ## AIC: 2357.9
+    ##     Null deviance: 3164.0  on 2670  degrees of freedom
+    ## Residual deviance: 2390.5  on 2649  degrees of freedom
+    ## AIC: 2434.5
     ## 
-    ## Number of Fisher Scoring iterations: 11
+    ## Number of Fisher Scoring iterations: 12
 
 **Testando o modelo**
 
@@ -527,38 +524,32 @@ confusionMatrix(table(data = lr.predictions.new, reference = test.class.var), po
     ## 
     ##     reference
     ## data    0    1
-    ##    0  240  106
-    ##    1  264 1172
-    ##                                          
-    ##                Accuracy : 0.7924         
-    ##                  95% CI : (0.7728, 0.811)
-    ##     No Information Rate : 0.7172         
-    ##     P-Value [Acc > NIR] : 2.265e-13      
-    ##                                          
-    ##                   Kappa : 0.4345         
-    ##                                          
-    ##  Mcnemar's Test P-Value : 3.294e-16      
-    ##                                          
-    ##             Sensitivity : 0.9171         
-    ##             Specificity : 0.4762         
-    ##          Pos Pred Value : 0.8162         
-    ##          Neg Pred Value : 0.6936         
-    ##              Prevalence : 0.7172         
-    ##          Detection Rate : 0.6577         
-    ##    Detection Prevalence : 0.8058         
-    ##       Balanced Accuracy : 0.6966         
-    ##                                          
-    ##        'Positive' Class : 1              
+    ##    0  260  104
+    ##    1  248 1170
+    ##                                           
+    ##                Accuracy : 0.8025          
+    ##                  95% CI : (0.7832, 0.8207)
+    ##     No Information Rate : 0.7149          
+    ##     P-Value [Acc > NIR] : < 2.2e-16       
+    ##                                           
+    ##                   Kappa : 0.4703          
+    ##                                           
+    ##  Mcnemar's Test P-Value : 2.499e-14       
+    ##                                           
+    ##             Sensitivity : 0.9184          
+    ##             Specificity : 0.5118          
+    ##          Pos Pred Value : 0.8251          
+    ##          Neg Pred Value : 0.7143          
+    ##              Prevalence : 0.7149          
+    ##          Detection Rate : 0.6566          
+    ##    Detection Prevalence : 0.7957          
+    ##       Balanced Accuracy : 0.7151          
+    ##                                           
+    ##        'Positive' Class : 1               
     ## 
 
-**O modelo apresentou uma Accuracy : 0.7969, quase igual a anterior.**
-
-**A matriz de confusão traz que quando o valor original era 0 nosso
-modelo acertou 242 e errou 98, e quando era 1 nosso modelo errou 261 e
-acertou 1174.**
-
-**Seria necessário repensar a necessidade da escolha pelo segundo
-modelo**
+**Frente ao resultado, seria necessário repensar a necessidade da
+escolha pelo segundo modelo**
 
 **Para concluir, foi apresentado a Curva de ROC no gráfico abaixo:**
 

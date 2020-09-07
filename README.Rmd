@@ -43,7 +43,7 @@ glimpse(df_credito)
 ```
 
 __Contagem dos valores NAs por váriavel do modelo__
-```{r, echo=FALSE}
+```{r }
 
 titulos_col <- df_credito %>%
   names
@@ -61,7 +61,7 @@ for(i in 1:length(titulos_col)){
 
 __Avaliação para substituição dos NA's__
 
-__As variáveis moradia, estado_civil e trabalho, apresentaram um número de NA's pouco expressivo, foi considerado como ERRO no cadastro. Para esse estudo não foi feita análise, mas sim a alteração dos campos NA's para indefinido.__
+__As variáveis moradia, estado_civil e trabalho, apresentaram um número de NA's pouco expressivo, foi considerado como ERRO no cadastro. Para esse estudo não foi feita análise, mas sim a alteração dos campos NA's para "indefinido".__
 ```{r warning=FALSE}
 
 
@@ -137,7 +137,7 @@ grafico_rel_renda + grafico_rel_dividas + grafico_rel_ativos
 
 __Retirada dos NA's__
 
-__A análise visual dos dados, nos mostra que para ambas variáveis o comportamento para o status, "Bom" ou "Ruim" apresenta a média muito próxima, concluindo assim que não apresentam forte valor explicativo para o modelo.__
+__A análise visual dos dados, nos mostra que ambas variáveis tem distribuição próxima a média para o status, "Bom" ou "Ruim".__
 
 __Optei pela retirada dos NA's e inclusão da média para variável.__
 ```{r }
@@ -305,7 +305,7 @@ tab_faixa_etaria <- df_credito_ajustado %>%
 
 prop.faixa.et <- ggplot(tab_faixa_etaria) +
   aes(x = faixa_etaria, weight = prop.bons.ruins) +
-  geom_bar(width = 0.5, fill = "#0c4c8a") +
+  geom_bar(width = 0.4, fill = "#0c4c8a") +
   coord_flip()+
   labs( title = "Bons Pagadores: Maior faixa etária",
         x = "Tempo de Empresa",
@@ -319,7 +319,7 @@ prop.faixa.et <- ggplot(tab_faixa_etaria) +
 
 prop.tempo.emp <- ggplot(tab_faixa_tempoempre) +
    aes(x = faixa_tempo_empresa, weight = prop.bons.ruins) +
-   geom_bar(width = 0.5, fill = "#0c4c8a") +
+   geom_bar(width = 0.6, fill = "#0c4c8a") +
    coord_flip()+
    labs( title = "Bons Pagadores: (+) Tempo de Empresa ",
          x = "Tempo de Empresa",
@@ -334,7 +334,7 @@ prop.tempo.emp <- ggplot(tab_faixa_tempoempre) +
 
 prop.est.civi <- ggplot(tab_estado_civ) +
    aes(x = estado_civil, weight = prop.bons.ruins) +
-   geom_bar(width = 0.5, fill = "#0c4c8a") +
+   geom_bar(width = 0.3, fill = "#0c4c8a") +
    labs( title = "Bons Pagadores: Estado Civil ",
          x = "Tempo de Empresa",
          y = "Proporção: Bons/Ruins")+
@@ -348,7 +348,7 @@ prop.est.civi <- ggplot(tab_estado_civ) +
 ```
 
 ```{r}
-prop.faixa.et
+prop.faixa.et 
 ```
 
 ```{r}
@@ -422,19 +422,19 @@ varImp((rfe.results))
 
 __As variáveis que apresentaram maior relação explicativa a relação bom ou mau pagador (conforme esse modelo) são:__
 
- __registros         30.047797__
+ __-registros__
  
-__trabalho            26.646050__
+__-trabalho__
 
-__tempo_empresa       19.280090__
+__-tempo_empresa__
 
-__renda               19.067687__
+__-renda__
 
-__valor-emprestimo    17.874087__
+__-valor-emprestimo__
 
 __Na análise descritiva realizada no início do estudo foram avaliadas faixa etária, tempo de trabalho na empresa e estado civil. Nota-se, que somente o tempo de empresa dentre as variáveis, consta na lista das 5 mais explicativas.__
 
-```{r message=FALSE}
+```{r message = FALSE}
 
 ## Separando as variáveis
 test.feature.vars <- test.data[,-1]
@@ -458,9 +458,6 @@ lr.predictions <- round(lr.predictions)
 
 confusionMatrix(table(data = lr.predictions, reference = test.class.var), positive = '1')
 ```
-__O modelo apresentou uma Accuracy : 0.7963__
-
-__A matriz de confusão traz que quando o valor original era 0 nosso modelo acertou 242 e errou 98, e quando era 1 nosso modelo errou 265 e acertou 1177.__
 
 __Em um primeiro momento poderiamos dizer o que o modelo está com um bom nível de Accuracy, mas da pra melhorar?__
 
@@ -502,11 +499,7 @@ __Avaliando a matrix de confusão e mudança na Accuracy__
 confusionMatrix(table(data = lr.predictions.new, reference = test.class.var), positive = '1')
 ```
 
-__O modelo apresentou uma Accuracy : 0.7969, quase igual a anterior.__
-
-__A matriz de confusão traz que quando o valor original era 0 nosso modelo acertou 242 e errou 98, e quando era 1 nosso modelo errou 261 e acertou 1174.__
-
-__Seria necessário repensar a necessidade da escolha pelo segundo modelo__
+__Frente ao resultado, seria necessário repensar a necessidade da escolha pelo segundo modelo__
 
 
 
