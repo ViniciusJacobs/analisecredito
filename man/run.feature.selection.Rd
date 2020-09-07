@@ -4,7 +4,7 @@
 \alias{run.feature.selection}
 \title{Função para seleção de variáveis}
 \usage{
-run.feature.selection(num.iters = 20, feature.vars, class.var)
+run.feature.selection(num.iters = 10, feature.vars, class.var)
 }
 \arguments{
 \item{variaveis}{}

@@ -458,14 +458,12 @@ lr.predictions <- round(lr.predictions)
 
 confusionMatrix(table(data = lr.predictions, reference = test.class.var), positive = '1')
 ```
-__A matrix de confusao para 0: acertou 247 e errou 111.__
+__A matrix de confusao mostra que o modelo está acertando muito mais que errando__
 
-__Para 1 errou 266 e acertou 1158.__
-
-__Os 0.8025 apurados para Accuracy, mostram que o modelo está acertando bastante.__
+__Esse resultado está alinhado com o apurado para Accuracy__
 
 
-__Em um primeiro momento poderiamos dizer o que o modelo está com um bom nível de Accuracy, mas da pra melhorar?__
+__Em um primeiro momento poderiamos dizer o que o modelo está com um bom nível de Accuracy, mas dá pra melhorar?__
 
 
 ```{r}
@@ -504,13 +502,10 @@ __Avaliando a matrix de confusão e mudança na Accuracy__
 ```{r}
 confusionMatrix(table(data = lr.predictions.new, reference = test.class.var), positive = '1')
 ```
-__A matrix de confusao para 0: acertou 260 e errou 104.__
-
-__Para 1 errou 248 e acertou 1170.__
 
 
-__A Accuracy do modelo não foi alterada, seria necessário repensar a necessidade da escolha de uma troca de modelo__
 
+__Com base na Accuracy concluiu-se utilizar o segundo modelo, embora seja pequena a mudança de um para o outro__
 
 
 __Para concluir, foi apresentado a Curva de ROC no gráfico abaixo:__

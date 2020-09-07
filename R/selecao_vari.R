@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-run.feature.selection <- function(num.iters=20, feature.vars, class.var){
+run.feature.selection <- function(num.iters=10, feature.vars, class.var){
   set.seed(10)
   variable.sizes <- 1:10
   control <- rfeControl(functions = rfFuncs, method = "cv",
