@@ -458,6 +458,12 @@ lr.predictions <- round(lr.predictions)
 
 confusionMatrix(table(data = lr.predictions, reference = test.class.var), positive = '1')
 ```
+__A matrix de confusao para 0: acertou 247 e errou 111.__
+
+__Para 1 errou 266 e acertou 1158.__
+
+__Os 0.8025 apurados para Accuracy, mostram que o modelo está acertando bastante.__
+
 
 __Em um primeiro momento poderiamos dizer o que o modelo está com um bom nível de Accuracy, mas da pra melhorar?__
 
@@ -498,8 +504,12 @@ __Avaliando a matrix de confusão e mudança na Accuracy__
 ```{r}
 confusionMatrix(table(data = lr.predictions.new, reference = test.class.var), positive = '1')
 ```
+__A matrix de confusao para 0: acertou 260 e errou 104.__
 
-__Frente ao resultado, seria necessário repensar a necessidade da escolha pelo segundo modelo__
+__Para 1 errou 248 e acertou 1170.__
+
+
+__A Accuracy do modelo não foi alterada, seria necessário repensar a necessidade da escolha de uma troca de modelo__
 
 
 
@@ -515,5 +525,5 @@ plot.pr.curve(predictions, title.text = "Curva Precision/Recall")
 
 ```
  
- __O gráfico da esquerda nos mostra que a curva toda acima e a esquerda da reta. Sendo assim nosso modelo preditivo está estimando bem.__
+ __O gráfico da esquerda nos mostra que a curva toda acima e a esquerda da reta. Sendo assim nosso modelo preditivo está estimando bem .__
  
