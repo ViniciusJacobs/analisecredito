@@ -158,7 +158,7 @@ __Na etapa inicial, foi realizada analise gráfica e o mapeamento de algumas var
 
 __Buscando compreender um pouco mais sobre quem foram meus clientes no passado, montei gráficos para  IDADE(por faixa etária), tempo de empresa (também por faixas) e distribuição de bons e ruins clientes.__
 
-```{r}
+```{r include = FALSE}
 
 df_credito_ajustado <- df_credito_ajustado %>%
   mutate(faixa_etaria = case_when(idade<=25 ~ "1.Abaixo dos 25 anos",
@@ -291,6 +291,30 @@ dist_por_perfil + grafico_estado_civil + dist_por_faixa_eta
 
 
 __Por fim, quiz checar dentre essas variáveis qual a proporção entre os clientes Bons e Ruins__
+
+```{r}
+
+df_credito_ajustado <- df_credito_ajustado %>%
+  mutate(faixa_etaria = case_when(idade<=25 ~ "1.Abaixo dos 25 anos",
+                                  idade<=35 ~ "2.Entre 26 e 35 anos",
+                                  idade<=45 ~ "3.Entre 36 e 45 anos",
+                                  idade<=55 ~ "4.Entre 46 e 55 anos",
+                                  idade>55 ~"5.Acima dos 55 anos")) %>%
+  relocate(faixa_etaria, .after = idade)
+
+df_credito_ajustado <- df_credito_ajustado %>%
+  mutate(faixa_tempo_empresa = case_when(tempo_empresa<=2 ~ "1. Abaixo dos 2 anos",
+                                  tempo_empresa <= 4 ~ "2. Entre 3 e 4 anos",
+                                  tempo_empresa <= 6 ~ "3. Entre 5 e 6 anos",
+                                  tempo_empresa <= 8 ~ "4. Entre 7 e 8 anos",
+                                  tempo_empresa <= 10 ~ "5. Entre 9 e 10 anos",
+                                  tempo_empresa<=15 ~ "6. Entre 11 e 15 anos",
+                                  tempo_empresa<=20 ~ "7. Entre 16 e 20 anos",
+                                  tempo_empresa<=25 ~ "8. Entre 21 e 25 anos",
+                                  tempo_empresa<=36 ~ "9. Entre 26 e 35 anos",
+                                  tempo_empresa>36 ~"Acima dos 36 anos")) %>%
+  relocate(faixa_tempo_empresa, .after = tempo_empresa)
+```
 
 ```{r}
 tab_faixa_tempoempre
