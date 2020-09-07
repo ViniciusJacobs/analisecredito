@@ -12,10 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Objetivo
-  
-- Demonstrar algumas técnicas de AED; 
+
+- Extrair informações da base fornecida;    
 - Apresentar as caracteristicas demograficas e financeiras dos clientes presentes na base de dados; 
-- Identificar quais variáveis do modelo explicam quais são os clientes bons e ruins;
+- Identificar entre as variáveis do modelo, quais explicam um cliente ser bom ou ruim. 
 - Elaborar um modelo de previsão para o problema de negócio.
 
 
@@ -30,10 +30,9 @@ library(randomForest)
 library(ROCR)
 devtools::load_all()
 
-
 ```
 
-__Etapa 1: Análise Exploratória dos Dados__
+<font size="5">Etapa 1: Análise Exploratória dos Dados</font>
 
 __Leitura do data.frame e visualização das variáveis__
 
@@ -42,7 +41,10 @@ df_credito <- read_rds("data/credito.rds")
 glimpse(df_credito)
 ```
 
-__Contagem dos valores NAs por váriavel do modelo__
+
+
+__Identificar valores NA's no modelo e formas tratalos__ 
+
 ```{r }
 
 titulos_col <- df_credito %>%
@@ -59,9 +61,9 @@ for(i in 1:length(titulos_col)){
 
 ```
 
-__Avaliação para substituição dos NA's__
+<font size="4">O que fazer com os NA's do modelo? Eles estão em variáveis que explicam a variável alvo? São muitos os NA's?</font>
 
-__As variáveis moradia, estado_civil e trabalho, apresentaram um número de NA's pouco expressivo, foi considerado como ERRO no cadastro. Para esse estudo não foi feita análise, mas sim a alteração dos campos NA's para "indefinido".__
+__As variáveis moradia, estado_civil e trabalho, apresentaram um número de NA's pouco expressivo (menos de 1% do número de obs.), a situação NA foi considerada como ERRO no cadastro. Para esse estudo não foi feita análise, mas sim a alteração dos campos NA's para "indefinido".__
 ```{r warning=FALSE}
 
 
@@ -150,11 +152,13 @@ __Optei pela retirada dos NA's e inclusão da média para variável.__
 
 ```
 
-__Etapa 2: Caracteristicas demograficas e financeiras dos clientes presentes na base de dados.__
+<font size="5">Etapa 2: Caracteristicas demograficas e financeiras dos clientes presentes na base de dados.</font>
 
 __Na etapa inicial, foi realizada analise gráfica e o mapeamento de algumas variáveis, conforme abaixo:__
 
-```{r include=FALSE}
+__Buscando compreender um pouco mais sobre quem foram meus clientes no passado, montei gráficos para  IDADE(por faixa etária), tempo de empresa (também por faixas) e distribuição de bons e ruins clientes.__
+
+```{r}
 
 df_credito_ajustado <- df_credito_ajustado %>%
   mutate(faixa_etaria = case_when(idade<=25 ~ "1.Abaixo dos 25 anos",
@@ -176,13 +180,17 @@ df_credito_ajustado <- df_credito_ajustado %>%
                                   tempo_empresa<=36 ~ "9. Entre 26 e 35 anos",
                                   tempo_empresa>36 ~"Acima dos 36 anos")) %>%
   relocate(faixa_tempo_empresa, .after = tempo_empresa)
+```
 
- tab_faixa_tempoempre <-  df_credito_ajustado %>%
+```{r include=FALSE}
+tab_faixa_tempoempre <-  df_credito_ajustado %>%
     group_by(faixa_tempo_empresa, status) %>% 
     summarise(contagem = n()) %>% 
     arrange(desc(faixa_tempo_empresa)) %>% 
     spread(status, contagem) %>%
     mutate(prop.bons.ruins = bom/ruim)
+
+
  
  tab_faixa_etaria <- df_credito_ajustado %>%
   group_by(faixa_etaria, status) %>% 
@@ -190,6 +198,13 @@ df_credito_ajustado <- df_credito_ajustado %>%
   arrange(desc(faixa_etaria)) %>% 
   spread(status, contagem) %>%
   mutate(prop.bons.ruins = bom/ruim)
+
+```
+
+
+
+```{r include=FALSE}
+
  
  
 dist_por_perfil <- grafico_status <- ggplot()+
@@ -265,6 +280,7 @@ tab_estado_civ <- df_credito_ajustado %>%
 
 ```
 
+
 ```{r}
 
 
@@ -273,7 +289,17 @@ dist_por_perfil + grafico_estado_civil + dist_por_faixa_eta
 
 ```
 
-__Por fim uma análise dentro das variáveis analisadas, buscando a proporcão de bons pagadores de forma ampla__
+
+__Por fim, quiz checar dentre essas variáveis qual a proporção entre os clientes Bons e Ruins__
+
+```{r}
+tab_faixa_tempoempre
+```
+
+```{r}
+tab_faixa_etaria 
+```
+
 
 ```{r include=FALSE }
 tab_faixa_tempoempre <-  df_credito_ajustado %>%
@@ -360,7 +386,7 @@ prop.est.civi
 ```
 
 
-__Etapa 3: Elaborar modelo preditivo para o modelo__
+<font size="5">3: Elaborar modelo preditivo para o modelo</font>
 
 ```{r include=FALSE}
 df_credito_ajustado <- df_credito_ajustado %>%
@@ -376,7 +402,10 @@ df_credito_ajustado_previ <- df_credito_ajustado %>%
 ```
 
 
-__Ajustes nas Variáveis__
+__Quando iniciei essa etapa a primeira coisa que percebi é que a limpeza/tratamento que havia dado ao modelo no início do projeto não eram suficientes para agora eu trabalhar com um modelo de regressão logística. Então mais um poquinho de tratamento aos dados...__
+
+
+
 ```{r}
 # Normalizando as variáveis
 
@@ -396,15 +425,16 @@ df_credito_ajustado_previ <- to.factors(df = df_credito_ajustado_previ, variable
 glimpse(df_credito_ajustado_previ)
 
 ```
+
+
 __Divisão do data.frame em treino e teste__
+
 ```{r}
 
-# Dividindo os dados em treino e teste - 60:40
+#60:40
 indexes <- sample(1:nrow(df_credito_ajustado_previ), size = 0.6 * nrow(df_credito_ajustado_previ))
 train.data <- df_credito_ajustado_previ[indexes,]
 test.data <- df_credito_ajustado_previ[-indexes,]
-
-
 
 
 ```
@@ -420,7 +450,7 @@ varImp((rfe.results))
 
 ```
 
-__As variáveis que apresentaram maior relação explicativa a relação bom ou mau pagador (conforme esse modelo) são:__
+__As variáveis que apresentaram maior relação explicativa a relação bom ou ruim pagador (conforme esse modelo) são:__
 
  __-registros__
  
@@ -433,6 +463,10 @@ __-renda__
 __-valor-emprestimo__
 
 __Na análise descritiva realizada no início do estudo foram avaliadas faixa etária, tempo de trabalho na empresa e estado civil. Nota-se, que somente o tempo de empresa dentre as variáveis, consta na lista das 5 mais explicativas.__
+
+__Isso reforça a ideia de que devemos trabalhar com dados__
+
+__Nessa próxima etapa, construi o modelo inicial__
 
 ```{r message = FALSE}
 
@@ -451,7 +485,7 @@ summary(lr.model)
 
 ```
 
-__Testando o modelo nos dados de teste e avaliando a ConfusionMatrix__
+__Testando o modelo nos dados inicial e avaliando a ConfusionMatrix__
 ```{r}
 lr.predictions <- predict(lr.model, test.data, type="response")
 lr.predictions <- round(lr.predictions)
@@ -460,10 +494,10 @@ confusionMatrix(table(data = lr.predictions, reference = test.class.var), positi
 ```
 __A matrix de confusao mostra que o modelo está acertando muito mais que errando__
 
-__Esse resultado está alinhado com o apurado para Accuracy__
+__Esse resultado está alinhado com o apurado para Accuracy, que é relativamente alto__
 
 
-__Em um primeiro momento poderiamos dizer o que o modelo está com um bom nível de Accuracy, mas dá pra melhorar?__
+<font size="3">Em um primeiro momento poderiamos dizer o que o modelo está com um bom nível de Accuracy, mas dá pra melhorar?</font>
 
 
 ```{r}
@@ -505,7 +539,7 @@ confusionMatrix(table(data = lr.predictions.new, reference = test.class.var), po
 
 
 
-__Com base na Accuracy concluiu-se utilizar o segundo modelo, embora seja pequena a mudança de um para o outro__
+__Com base na Accuracy conclui que devemos utilizar o segundo modelo, embora seja pequena a mudança de um para o outro__
 
 
 __Para concluir, foi apresentado a Curva de ROC no gráfico abaixo:__
